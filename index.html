@@ -3,74 +3,115 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>POS Screen</title>
+    <title>Product</title>
     <link rel="stylesheet" href="bootstrap.css" />
-    <link rel="stylesheet" href="style.css" />
+    <style>
+      #removeItem {
+        float: right;
+        background-color: red;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 5px;
+      }
+      #editItem {
+        float: left;
+        padding: 5px 25px;
+        border: none;
+        background-color: rebeccapurple;
+        color: white;
+        border-radius: 5px;
+      }
+      #btn_save {
+        float: right;
+        background-color: blue;
+        border-radius: 5px;
+        border: none;
+        color: white;
+        padding: 7px 15px;
+      }
+
+      #btn_cancel {
+        float: left;
+        background-color: red;
+        border-radius: 5px;
+        border: none;
+        color: white;
+        padding: 7px;
+      }
+      .formProduct {
+        border-radius: 5px;
+        border: 2px solid rgb(137, 159, 219);
+        box-shadow: 0px 5px 10px rgb(104, 94, 94);
+        padding: 10px;
+        height: 70vh;
+      }
+      img {
+        width: 50px;
+      }
+    </style>
   </head>
   <body>
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-7">
-          <div class="row" id="main_product_card"></div>
-        </div>
-        <div class="col-lg-5">
-          <div class="card product-card">
-            <div class="card-header"><h2>Select Product</h2></div>
-            <div class="card-body">
-              <div class="table-responsive">
-                <table class="table table-borderless table-striped">
-                  <thead class="bg-primary text-white">
-                    <tr>
-                      <th>No.</th>
-                      <th>Product Name</th>
-                      <th>Price</th>
-                      <th>Qty</th>
-                      <th>Total</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody id="create_product_tr"></tbody>
-                </table>
+      <div class="row" style="margin-top: 30px">
+        <div class="col-lg-4">
+          <div class="form_box">
+            <form action="#" method="get" class="formProduct">
+              <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" class="form-control" />
               </div>
-            </div>
-            <div class="card-foodter">
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th><h3>Total</h3></th>
-                    <th class="text-right">
-                      <h3 id="total_usa">$</h3>
-                      <h3 id="total_khr">៛</h3>
-                    </th>
-                  </tr>
-                  <tr>
-                    <th><h3>Receive</h3></th>
-                    <th>
-                      <input
-                        onkeyup="getChange()"
-                        type="number"
-                        id="receive_usa"
-                        placeholder="$"
-                      />
-                    </th>
-                  </tr>
-                  <tr>
-                    <th><h3>Change</h3></th>
-                    <th
-                      class="background-color"
-                      id="change_label"
-                      style="display: none"
-                    >
-                      <h3 class="text-right" id="change_usa"></h3>
-                    </th>
-                  </tr>
-                  <tr>
-                    <th id="cancel" onclick="cancel()">Cancel</th>
-                    <th id="payment" onclick="payment()">Pay Now</th>
-                  </tr>
-                </thead>
-              </table>
-            </div>
+              <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" class="form-control">
+                  <option value="Drink">Drink</option>
+                  <option value="Food">Food</option>
+                  <option value="Water">Water</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="qty">Qty</label>
+                <input type="number" id="qty" class="form-control" />
+              </div>
+              <div class="form-group">
+                <label for="price">Price</label>
+                <input type="number" id="price" class="form-control" />
+              </div>
+              <div class="form-group">
+                <label for="image_url">Image URL</label>
+                <input type="url" id="image_url" class="form-control" />
+              </div>
+              <div class="form-group">
+                <input type="button" id="btn_save" value="Save" />
+                <input
+                  onclick="cancel()"
+                  type="button"
+                  value="Cancel"
+                  id="btn_cancel"
+                />
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="col-lg-8">
+          <div class="table-responsive">
+            <table
+              class="table table-borderless table-striped"
+              id="product_list"
+            >
+              <thead>
+                <tr class="bg-primary text-white">
+                  <td>#</td>
+                  <td>Name</td>
+                  <td>Category</td>
+                  <td>Qty</td>
+                  <td>Price</td>
+                  <td>Photo</td>
+                  <td colspan="2" style="text-align: center">Action</td>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -78,134 +119,146 @@
   </body>
   <script src="main.js"></script>
   <script>
-    let main_product_card = document.getElementById("main_product_card");
-    let product_list = JSON.parse(localStorage.getItem("product_list")) ?? [];
-    let selete_product_card = [];
-    let create_product_tr = document.getElementById("create_product_tr");
-    let receive_usa = document.getElementById("receive_usa");
-    let change_usa = document.getElementById("change_usa");
+    let name = document.getElementById("name");
+    let category = document.getElementById("category");
+    let qty = document.getElementById("qty");
+    let price = document.getElementById("price");
+    let image_url = document.getElementById("image_url");
+    let btn_save = document.getElementById("btn_save");
+    let btn_cancel = document.getElementById("btn_cancel");
+    let product_list = document.querySelector("#product_list tbody");
+    let produts = getStudentList();
+    let edit = null;
 
-    let total = 0;
-    let cart = [];
-    renderCard();
-    function renderCard() {
-      let new_card = "";
-      product_list.forEach((product, index) => {
-        new_card += `
-         <div class="col-lg-3 " onclick="OnclickCard(${index})">
-              <div class="card product-card">
-                <center><img src="${product.value_imageURL}" alt="coca-cola" / class="mt-3"></center>
-                <div class="card-body">
-                  <div class="card-title">${product.value_name}</div>
-                  <div class="card-text">${product.value_price}$</div>
-                </div>
-              </div>
-            </div>
-        `;
-      });
-      main_product_card.innerHTML = new_card;
-    }
-
-    function OnclickCard(index) {
-      let selete_card = product_list[index];
-      let dpl_index = null;
-      for (let i = 0; i < selete_product_card.length; i++) {
-        if (selete_card.value_name == selete_product_card[i].value_name) {
-          dpl_index = i;
-          break;
-        }
-      }
-      if (dpl_index !== null) {
-        selete_product_card[dpl_index].quantity += 1;
-      } else {
-        selete_card.quantity = 1;
-        selete_product_card.push(selete_card);
-      }
-
-      renderTable();
-      totalAmount();
-    }
-
-    function renderTable() {
-      let new_card_table = "";
-
-      selete_product_card.forEach((product, index) => {
-        total = product.value_price * product.quantity;
-        new_card_table += `
-         <tr>
-              <td>${index + 1}</td>
-              <td>${product.value_name}</td>
-              <td>${product.value_price} $</td>
-              <td>${product.quantity}</td>             
-              <td>${total} $</td>
-              <td>
-                  <button value="Remove" onclick="deleteProduct(${index})" id="remove">❌</button>
-              </td>
-             
-          </tr>
-        `;
-      });
-      create_product_tr.innerHTML = new_card_table;
-    }
-    function deleteProduct(index) {
-      let check_confirm = confirm("Are you sure to delete this product");
-      if (check_confirm) {
-        selete_product_card.splice(index, 1);
-        renderTable();
-      }
-      totalAmount();
-      receive_usa.value = "";
-      change_usa.innerText = "";
-    }
-    function totalAmount() {
-      total = 0;
-      selete_product_card.forEach((product, index) => {
-        total += product.value_price * product.quantity;
-      });
-      document.getElementById("total_usa").innerText = " $ " + total.toFixed(2);
-      document.getElementById("total_khr").innerText =
-        "៛ " + (total * 4100).toFixed(2);
-    }
-    function payment() {
-      if (receive_usa.value < total) {
-        alert("Recieved must be greater than total");
+    renderList();
+    btn_save.addEventListener("click", function () {
+      if (name.value.trim() == "") {
+        name.focus();
         return;
       }
-      localStorage.setItem(
-        "selete_product_card",
-        JSON.stringify(selete_product_card)
-      );
-      let width = 600;
-      let height = 600;
-      let left = (window.screen.width - width) / 2;
-      let top = (window.screen.height - height) / 2;
-      window.open(
-        "invoice.html",
-        "_blank",
-        `width=600,height=600,
-     left=${left},
-     top=${top}`
-      );
-    }
-    function getChange() {
-      let change_amount = parseFloat(receive_usa.value) - parseFloat(total);
-      change_usa.innerText = "$ " + (receive_usa.value - total).toFixed(2);
-      if (change_amount > 0) {
-        document.getElementById("change_label").style.display = "block";
-      } else {
-        document.getElementById("change_label").style.display = "none";
+      if (price.value.trim() == "" || price.value < 1) {
+        price.focus();
+        return;
       }
+      if (image_url.value.trim() == "") {
+        image_url.focus();
+        return;
+      }
+
+      let value_name = name.value;
+      let value_category = category.value;
+      let value_qty = qty.value;
+      let value_price = price.value;
+      let value_imageURL = image_url.value;
+
+      if (edit != null) {
+        produts[edit] = {
+          value_name,
+          value_category,
+          value_qty,
+          value_price,
+          value_imageURL,
+        };
+        localStorage.setItem("product_list", JSON.stringify(produts));
+        btn_save.value = "Save";
+        edit = null;
+        Swal.fire({
+          title: "Product Edited",
+          icon: "success",
+          draggable: true,
+        });
+      } else {
+        produts.push({
+          value_name,
+          value_category,
+          value_qty,
+          value_price,
+          value_imageURL,
+        });
+        localStorage.setItem("product_list", JSON.stringify(produts));
+        Swal.fire({
+          title: "Product add successfully",
+          icon: "success",
+          draggable: true,
+        });
+      }
+
+      renderList();
+      name.value = "";
+      price.value = "";
+      image_url.value = "";
+
+      name.focus();
+    });
+    function renderList() {
+      product_list.innerHTML = "";
+      let obj_product = getStudentList();
+      obj_product.forEach(function (item, index) {
+        let new_tag = document.createElement("tr");
+        new_tag.innerHTML = `
+        <td> ${index + 1}</td>
+        <td> ${item.value_name}</td>
+        <td> ${item.value_category}</td>
+        <td> ${item.value_qty}</td>
+        <td> ${item.value_price} $</td>
+        <td><img src="${item.value_imageURL}" alt=""> </td>
+        <td> <button id="editItem" onclick="editItem(${index})">Edit</button></td>        
+        <td> <button id="removeItem" onclick="removeItem(${index})">Remove</button></td>
+        `;
+        product_list.appendChild(new_tag);
+      });
+    }
+    function getStudentList() {
+      let st_product = localStorage.getItem("product_list") ?? "[]";
+      return JSON.parse(st_product);
+    }
+    function removeItem(index) {
+      if (edit == null) {
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            Swal.fire({
+              title: "Deleted!",
+              text: `Your Product ID: ${index + 1} has been deleted.`,
+              icon: "success",
+            });
+            produts.splice(index, 1);
+            localStorage.setItem("product_list", JSON.stringify(produts));
+            renderList();
+            name.focus();
+          }
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Product editting",
+          text: "You Can not delete this Product!",
+          footer: "Check try again !",
+        });
+      }
+    }
+    function editItem(index) {
+      name.value = produts[index].value_name;
+      category.value = produts[index].value_category;
+      qty.value = produts[index].value_qty;
+      price.value = produts[index].value_price;
+      image_url.value = produts[index].value_imageURL;
+      btn_save.value = "Edit";
+      edit = index;
     }
     function cancel() {
-      let check_confirm = confirm("Are you sure to delete all product");
-      if (check_confirm) {
-        selete_product_card = [];
-        renderTable();
-        totalAmount();
-      }
-      receive_usa.value = "";
-      change_usa.innerText = "";
-      document.getElementById("change_label").style.display = "none";
+      name.value = "";
+      qty.value = "";
+      price.value = "";
+      image_url.value = "";
+      name.focus();
     }
   </script>
 </html>
