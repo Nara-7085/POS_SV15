@@ -1,0 +1,74 @@
+/* General Body Styling */
+body {
+  margin-top: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+
+.product-card {
+  width: 100%;
+  margin-top: 30px;
+  padding: 15px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+
+img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+
+#total_usa,
+#total_khr {
+  color: #e60000;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+
+#receive_usa {
+  border: 2px solid #e60000;
+  font-size: 24px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  text-align: right;
+  box-sizing: border-box;
+  background-color: #fffdfd;
+}
+
+
+#cancel,
+#payment {
+  font-size: 24px;
+  color: #fff;
+  text-align: center;
+  padding: 12px 0;
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+  margin-top: 15px;
+}
+
+#cancel {
+  background-color: #d32f2f;
+}
+
+#payment {
+  background-color: #346ce4;
+}
+
+#cancel:hover {
+  background-color: #b71c1c;
+}
+
+#payment:hover {
+  background-color: #1f4fc1;
+}
